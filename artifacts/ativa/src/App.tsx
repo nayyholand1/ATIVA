@@ -12,6 +12,7 @@ import {
 interface Secao {
   id: string;
   titulo: string;
+  descricao: string;
   icon: React.ReactNode;
   conteudo: React.ReactNode;
 }
@@ -81,11 +82,10 @@ function BarraBusca({ onBuscar, destaques = [] }: BuscaProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onBuscar(valor);
-      setValor("");
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setValor(v);
+    onBuscar(v);
   };
 
   const limpar = () => {
@@ -105,21 +105,22 @@ function BarraBusca({ onBuscar, destaques = [] }: BuscaProps) {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Pesquisar no ATIVA... (Enter para buscar)"
+          placeholder="Pesquisar no ATIVA..."
           value={valor}
-          onChange={(e) => setValor(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={handleChange}
           aria-label="Pesquisar seções"
         />
         {valor.length > 0 && (
-          <button className="search-clear" onClick={limpar} aria-label="Limpar busca">
-            <X size={15} />
-          </button>
-        )}
-        {destaques.length > 0 && valor.length === 0 && (
-          <span className="search-results-badge">
-            {destaques.length} encontrado{destaques.length !== 1 ? "s" : ""}
-          </span>
+          <>
+            {destaques.length > 0 && (
+              <span className="search-results-badge">
+                {destaques.length} resultado{destaques.length !== 1 ? "s" : ""}
+              </span>
+            )}
+            <button className="search-clear" onClick={limpar} aria-label="Limpar busca">
+              <X size={15} />
+            </button>
+          </>
         )}
       </div>
     </div>
@@ -132,6 +133,7 @@ function BarraBusca({ onBuscar, destaques = [] }: BuscaProps) {
 interface GrupoProps {
   id: string;
   titulo: string;
+  descricao: string;
   icon: React.ReactNode;
   conteudo: React.ReactNode;
   aberto: boolean;
@@ -139,9 +141,7 @@ interface GrupoProps {
   destaque: boolean;
 }
 
-function Grupo({ id, titulo, icon, conteudo, aberto, onToggle, destaque }: GrupoProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
-
+function Grupo({ id, titulo, descricao, icon, conteudo, aberto, onToggle, destaque }: GrupoProps) {
   return (
     <div className={`grupo${destaque ? " destaque-busca" : ""}`} id={id}>
       <button
@@ -149,14 +149,17 @@ function Grupo({ id, titulo, icon, conteudo, aberto, onToggle, destaque }: Grupo
         aria-expanded={aberto}
         onClick={onToggle}
       >
-        <span className="tab-icon">
-          {icon}
-          {titulo}
+        <span className="tab-body">
+          <span className="tab-icon">
+            {icon}
+            {titulo}
+          </span>
+          {!aberto && <span className="tab-descricao">{descricao}</span>}
         </span>
         <ChevronDown size={17} className="tab-seta" />
       </button>
 
-      <div ref={contentRef} className={`info${aberto ? " aberto" : ""}`}>
+      <div className={`info${aberto ? " aberto" : ""}`}>
         {conteudo}
       </div>
     </div>
@@ -555,7 +558,7 @@ function Integrantes() {
    COMPONENTE PRINCIPAL
 =================================================== */
 export default function App() {
-  const [abertos, setAbertos] = useState<Record<string, boolean>>({});
+  const [abertos, setAbertos] = useState<Record<string, boolean>>({ objetivos: true });
   const [destaques, setDestaques] = useState<string[]>([]);
 
   const MAPA_BUSCA: Record<string, string> = {
@@ -572,16 +575,16 @@ export default function App() {
   };
 
   const secoes: Secao[] = [
-    { id: "objetivos",   titulo: "Objetivos",               icon: <Target size={16} />,       conteudo: <Objetivos /> },
-    { id: "desafios",    titulo: "Desafios",                icon: <AlertTriangle size={16} />, conteudo: <Desafios /> },
-    { id: "cultura",     titulo: "Cultura Local",           icon: <Trees size={16} />,         conteudo: <CulturaLocal /> },
-    { id: "conteudos",   titulo: "Conteúdos",               icon: <Clapperboard size={16} />,  conteudo: <Conteudos /> },
-    { id: "trajetoria",  titulo: "Trajetória da Educação",  icon: <Clock3 size={16} />,        conteudo: <Trajetoria /> },
-    { id: "realidade",   titulo: "Realidade Educacional",   icon: <BookOpenText size={16} />,  conteudo: <RealidadeEducacional /> },
-    { id: "dados",       titulo: "Dados da Pesquisa",       icon: <PieChart size={16} />,      conteudo: <DadosPesquisa /> },
-    { id: "relatos",     titulo: "Relatos",                 icon: <MessageCircle size={16} />, conteudo: <Relatos /> },
-    { id: "reflexoes",   titulo: "Reflexões",               icon: <Sparkles size={16} />,      conteudo: <Reflexoes /> },
-    { id: "integrantes", titulo: "Integrantes",             icon: <Users size={16} />,         conteudo: <Integrantes /> },
+    { id: "objetivos",   titulo: "Objetivos",               descricao: "O que o projeto busca alcançar e por quê",              icon: <Target size={16} />,       conteudo: <Objetivos /> },
+    { id: "desafios",    titulo: "Desafios",                descricao: "Preconceito, adaptação e invisibilidade cultural",       icon: <AlertTriangle size={16} />, conteudo: <Desafios /> },
+    { id: "cultura",     titulo: "Cultura Local",           descricao: "O Povo Pitaguary e a resistência indígena no Ceará",     icon: <Trees size={16} />,         conteudo: <CulturaLocal /> },
+    { id: "conteudos",   titulo: "Conteúdos",               descricao: "Playlist com vídeos e reflexões sobre educação indígena",icon: <Clapperboard size={16} />,  conteudo: <Conteudos /> },
+    { id: "trajetoria",  titulo: "Trajetória da Educação",  descricao: "Da colonização até a educação intercultural atual",      icon: <Clock3 size={16} />,        conteudo: <Trajetoria /> },
+    { id: "realidade",   titulo: "Realidade Educacional",   descricao: "A contradição entre inclusão no acesso e na permanência",icon: <BookOpenText size={16} />,  conteudo: <RealidadeEducacional /> },
+    { id: "dados",       titulo: "Dados da Pesquisa",       descricao: "Resultados do questionário aplicado na EEEP",            icon: <PieChart size={16} />,      conteudo: <DadosPesquisa /> },
+    { id: "relatos",     titulo: "Relatos",                 descricao: "Falas de lideranças indígenas sobre educação e cultura",  icon: <MessageCircle size={16} />, conteudo: <Relatos /> },
+    { id: "reflexoes",   titulo: "Reflexões",               descricao: "Inclusão, pertencimento e transformação coletiva",       icon: <Sparkles size={16} />,      conteudo: <Reflexoes /> },
+    { id: "integrantes", titulo: "Integrantes",             descricao: "Equipe responsável pelo projeto A.T.I.V.A.",             icon: <Users size={16} />,         conteudo: <Integrantes /> },
   ];
 
   // Abre a aba clicada, fecha todas as outras (igual ao JS original)
@@ -624,7 +627,7 @@ export default function App() {
     }, 60);
   }, []);
 
-  // Busca ao pressionar Enter (igual ao JS original)
+  // Busca em tempo real enquanto digita
   const handleBuscar = useCallback((valor: string) => {
     if (!valor.trim()) {
       setDestaques([]);
@@ -634,22 +637,17 @@ export default function App() {
 
     const encontrados = secoes
       .filter((s) => {
-        const texto = (s.titulo + " " + (MAPA_BUSCA[s.id] ?? "")).toLowerCase();
+        const texto = (s.titulo + " " + s.descricao + " " + (MAPA_BUSCA[s.id] ?? "")).toLowerCase();
         return texto.includes(q);
       })
       .map((s) => s.id);
 
-    // remove destaque antigo, adiciona novo — igual ao JS original
     setDestaques(encontrados);
 
     if (encontrados.length > 0) {
       const primeiroId = encontrados[0];
-      // rola até o tópico encontrado e destaca
       const el = document.getElementById(primeiroId);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      // remove o destaque após 1.5s (igual ao setTimeout do JS original)
-      setTimeout(() => setDestaques([]), 1500);
     }
   }, []);
 
@@ -686,6 +684,7 @@ export default function App() {
                 key={s.id}
                 id={s.id}
                 titulo={s.titulo}
+                descricao={s.descricao}
                 icon={s.icon}
                 conteudo={s.conteudo}
                 aberto={!!abertos[s.id]}
