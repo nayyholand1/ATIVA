@@ -679,20 +679,6 @@ export default function App() {
             estudantes indígenas em escolas profissionalizantes, principalmente nas EEEPs.
           </p>
 
-          {/* Navegação rápida */}
-          <nav className="nav-rapida" aria-label="Navegação rápida">
-            {secoes.map((s) => (
-              <button
-                key={s.id}
-                className="nav-pill"
-                onClick={() => irPara(s.id)}
-                aria-label={`Ir para ${s.titulo}`}
-              >
-                {s.titulo}
-              </button>
-            ))}
-          </nav>
-
           {/* Acordeão */}
           <div className="botoes">
             {secoes.map((s) => (
