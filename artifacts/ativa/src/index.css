@@ -822,42 +822,66 @@ h1::after {
 
 .integrante-card {
   text-align: center;
-  padding: 24px 20px;
+  padding: 22px 18px;
   border-radius: 20px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  min-width: 160px;
+  min-width: 150px;
   flex: 1;
-  max-width: 200px;
-  transition: transform 0.3s;
+  max-width: 185px;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.integrante-card:hover { transform: translateY(-6px); }
-.integrante-card.destaque { background: rgba(214,178,122,0.12); border-color: rgba(214,178,122,0.3); }
+.integrante-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.3);
+}
 
-.avatar-circle {
-  width: 72px;
-  height: 72px;
+.integrante-card.destaque {
+  background: rgba(214,178,122,0.12);
+  border-color: rgba(214,178,122,0.35);
+}
+
+.foto-integrante {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
   border-radius: 50%;
-  background: rgba(214,178,122,0.15);
-  border: 2px solid rgba(214,178,122,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0 auto 14px;
-  font-size: 28px;
+  display: block;
+  border: 3px solid rgba(255,255,255,0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 18px rgba(0,0,0,0.25);
+}
+
+.integrante-card.destaque .foto-integrante {
+  border-color: rgba(214,178,122,0.5);
+  box-shadow: 0 0 20px rgba(214,178,122,0.25);
+}
+
+.foto-integrante:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 28px rgba(214,178,122,0.3);
 }
 
 .integrante-card h4 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  line-height: 1.4;
 }
 
-.integrante-card p {
+.integrante-card p.turma {
+  font-size: 11px;
+  color: rgba(243,230,208,0.6);
+  margin: 0;
+}
+
+.integrante-card p.cargo {
   font-size: 12px;
   color: var(--gold);
+  font-weight: 600;
   margin: 0;
 }
 

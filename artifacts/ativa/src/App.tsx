@@ -476,23 +476,48 @@ function Reflexoes() {
 }
 
 function Integrantes() {
+  const orientador = {
+    nome: "Gabriel Xavier",
+    papel: "Orientador",
+    foto: "https://i.ibb.co/PGRMQnqw/dd590e55-a705-4635-9adb-9177fa7ed51f.jpg",
+  };
+
   const membros = [
-    { nome: "Prof.ª Orientadora", papel: "Orientadora do Projeto", emoji: "👩‍🏫", destaque: true },
-    { nome: "Integrante 1", papel: "Pesquisadora", emoji: "🌿", destaque: false },
-    { nome: "Integrante 2", papel: "Pesquisadora", emoji: "🌿", destaque: false },
-    { nome: "Integrante 3", papel: "Pesquisadora", emoji: "🌿", destaque: false },
-    { nome: "Integrante 4", papel: "Pesquisadora", emoji: "🌿", destaque: false },
+    { nome: "Isabelle Cavalcante da Silva",      papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/jvHpnpmK/8674ecda-fe26-4ade-9f10-9507b3286d52.jpg" },
+    { nome: "Jefferson Belo Lima Barbosa",        papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/hJfdh6bL/bf3ca98a-ca86-47dd-bba4-b05bb568e1cf.jpg" },
+    { nome: "Laís Alves de Sousa",               papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/994fCjvd/4a3002a4-334b-446c-b9d3-1ab45dcb1181.jpg" },
+    { nome: "Letícia Cavalcante Lima",            papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/prGc48Kf/IMG-5394.jpg" },
+    { nome: "Maria Eduarda Rocha Cavalcante",     papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/Bhq1010/8c8d5f95-92c8-4fd1-aba4-ff20903244a4.jpg" },
+    { nome: "Maria Izabelle do Nascimento Santos",papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/pBySDQ19/a57fbeaf-636e-4126-8ede-209933cf6e18.jpg" },
+    { nome: "Mikaely Xavier Soares",              papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/G3JpszPg/15088f15-aeb9-4bb1-862c-c0d49fbace39.jpg" },
+    { nome: "Naylla Laiane Holanda de Lima",      papel: "Estudante do 2º ano Automação", foto: "https://i.ibb.co/3yx5yqYC/3b560465-64aa-464b-866a-e169588f7957.jpg" },
   ];
 
   return (
     <>
-      <h2><Users size={20} /> Integrantes do Projeto</h2>
+      <h2><Users size={20} /> Integrantes do Grupo</h2>
+
       <div className="integrantes-grid">
+        <div className="integrante-card destaque">
+          <img
+            src={orientador.foto}
+            alt={orientador.nome}
+            className="foto-integrante"
+          />
+          <h4>{orientador.nome}</h4>
+          <p className="cargo">{orientador.papel}</p>
+        </div>
+
         {membros.map((m) => (
-          <div className={`integrante-card${m.destaque ? " destaque" : ""}`} key={m.nome}>
-            <div className="avatar-circle">{m.emoji}</div>
+          <div className="integrante-card" key={m.nome}>
+            <img
+              src={m.foto}
+              alt={m.nome}
+              className="foto-integrante"
+              loading="lazy"
+            />
             <h4>{m.nome}</h4>
-            <p>{m.papel}</p>
+            <p className="turma">{m.papel}</p>
           </div>
         ))}
       </div>
@@ -522,11 +547,17 @@ export default function App() {
   ];
 
   const toggleSecao = useCallback((id: string) => {
-    setAbertos((prev) => ({ ...prev, [id]: !prev[id] }));
+    setAbertos((prev) => {
+      const isOpen = !!prev[id];
+      if (isOpen) {
+        return { ...prev, [id]: false };
+      }
+      return { [id]: true };
+    });
   }, []);
 
   const irPara = useCallback((id: string) => {
-    setAbertos((prev) => ({ ...prev, [id]: true }));
+    setAbertos({ [id]: true });
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
