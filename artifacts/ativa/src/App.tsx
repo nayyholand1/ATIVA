@@ -55,24 +55,49 @@ function Folhas() {
    BARRA DE BUSCA
 =================================================== */
 interface BuscaProps {
-  query: string;
-  setQuery: (q: string) => void;
-  resultados: number;
-  onLimpar: () => void;
+  onBuscar: (q: string) => void;
+  destaques: string[];
 }
 
-function BarraBusca({ query, setQuery, resultados, onLimpar }: BuscaProps) {
+function BarraBusca({ onBuscar, destaques = [] }: BuscaProps) {
+  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [valor, setValor] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const ultimoScroll = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      const atual = window.scrollY;
+      if (atual > ultimoScroll.current && atual > 80) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+      setScrolled(atual > 10);
+      ultimoScroll.current = atual;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onBuscar(valor);
+      setValor("");
+    }
+  };
+
+  const limpar = () => {
+    setValor("");
+    onBuscar("");
+    inputRef.current?.focus();
+  };
+
   return (
-    <div className={`ativa-search${scrolled ? " scrolled" : ""}`}>
+    <div
+      className={`ativa-search${scrolled ? " scrolled" : ""}${hidden ? " escondida" : ""}`}
+    >
       <div className="ativa-search-inner">
         <div className="search-icon">
           <Search size={16} />
@@ -80,20 +105,21 @@ function BarraBusca({ query, setQuery, resultados, onLimpar }: BuscaProps) {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Pesquisar no ATIVA..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Pesquisar no ATIVA... (Enter para buscar)"
+          value={valor}
+          onChange={(e) => setValor(e.target.value)}
+          onKeyDown={handleKeyDown}
           aria-label="Pesquisar seções"
         />
-        {query.length > 0 && (
-          <>
-            <span className="search-results-badge">
-              {resultados} resultado{resultados !== 1 ? "s" : ""}
-            </span>
-            <button className="search-clear" onClick={onLimpar} aria-label="Limpar busca">
-              <X size={15} />
-            </button>
-          </>
+        {valor.length > 0 && (
+          <button className="search-clear" onClick={limpar} aria-label="Limpar busca">
+            <X size={15} />
+          </button>
+        )}
+        {destaques.length > 0 && valor.length === 0 && (
+          <span className="search-results-badge">
+            {destaques.length} encontrado{destaques.length !== 1 ? "s" : ""}
+          </span>
         )}
       </div>
     </div>
@@ -529,94 +555,111 @@ function Integrantes() {
    COMPONENTE PRINCIPAL
 =================================================== */
 export default function App() {
-  const [query, setQuery] = useState("");
   const [abertos, setAbertos] = useState<Record<string, boolean>>({});
   const [destaques, setDestaques] = useState<string[]>([]);
 
+  const MAPA_BUSCA: Record<string, string> = {
+    objetivos:   "objetivo objetivos inclusão respeito eeep",
+    desafios:    "desafio desafios preconceito adaptação invisibilidade pressão emocional",
+    cultura:     "cultura local pitaguary maracanaú pacatuba ceará resistência representatividade",
+    conteudos:   "conteudo conteudos playlist video interculturalidade",
+    trajetoria:  "trajetoria trajetória colonização constituição 1988 intercultural bilíngue",
+    realidade:   "realidade educacional inclusão contradição currículo padronizado accountability",
+    dados:       "dados pesquisa grafico diagnóstico estudantes",
+    relatos:     "relato relatos krenak guajajara raoni pertencimento",
+    reflexoes:   "reflexão reflexoes diversidade escuta transformação",
+    integrantes: "integrante integrantes orientador equipe membros gabriel xavier isabelle",
+  };
+
   const secoes: Secao[] = [
-    { id: "objetivos",    titulo: "Objetivos",                   icon: <Target size={16} />,       conteudo: <Objetivos /> },
-    { id: "desafios",     titulo: "Desafios",                    icon: <AlertTriangle size={16} />, conteudo: <Desafios /> },
-    { id: "cultura",      titulo: "Cultura Local",               icon: <Trees size={16} />,         conteudo: <CulturaLocal /> },
-    { id: "conteudos",    titulo: "Conteúdos",                   icon: <Clapperboard size={16} />,  conteudo: <Conteudos /> },
-    { id: "trajetoria",   titulo: "Trajetória da Educação",      icon: <Clock3 size={16} />,        conteudo: <Trajetoria /> },
-    { id: "realidade",    titulo: "Realidade Educacional",       icon: <BookOpenText size={16} />,  conteudo: <RealidadeEducacional /> },
-    { id: "dados",        titulo: "Dados da Pesquisa",           icon: <PieChart size={16} />,      conteudo: <DadosPesquisa /> },
-    { id: "relatos",      titulo: "Relatos",                     icon: <MessageCircle size={16} />, conteudo: <Relatos /> },
-    { id: "reflexoes",    titulo: "Reflexões",                   icon: <Sparkles size={16} />,      conteudo: <Reflexoes /> },
-    { id: "integrantes",  titulo: "Integrantes",                 icon: <Users size={16} />,         conteudo: <Integrantes /> },
+    { id: "objetivos",   titulo: "Objetivos",               icon: <Target size={16} />,       conteudo: <Objetivos /> },
+    { id: "desafios",    titulo: "Desafios",                icon: <AlertTriangle size={16} />, conteudo: <Desafios /> },
+    { id: "cultura",     titulo: "Cultura Local",           icon: <Trees size={16} />,         conteudo: <CulturaLocal /> },
+    { id: "conteudos",   titulo: "Conteúdos",               icon: <Clapperboard size={16} />,  conteudo: <Conteudos /> },
+    { id: "trajetoria",  titulo: "Trajetória da Educação",  icon: <Clock3 size={16} />,        conteudo: <Trajetoria /> },
+    { id: "realidade",   titulo: "Realidade Educacional",   icon: <BookOpenText size={16} />,  conteudo: <RealidadeEducacional /> },
+    { id: "dados",       titulo: "Dados da Pesquisa",       icon: <PieChart size={16} />,      conteudo: <DadosPesquisa /> },
+    { id: "relatos",     titulo: "Relatos",                 icon: <MessageCircle size={16} />, conteudo: <Relatos /> },
+    { id: "reflexoes",   titulo: "Reflexões",               icon: <Sparkles size={16} />,      conteudo: <Reflexoes /> },
+    { id: "integrantes", titulo: "Integrantes",             icon: <Users size={16} />,         conteudo: <Integrantes /> },
   ];
 
+  // Abre a aba clicada, fecha todas as outras (igual ao JS original)
   const toggleSecao = useCallback((id: string) => {
     setAbertos((prev) => {
-      const isOpen = !!prev[id];
-      if (isOpen) {
-        return { ...prev, [id]: false };
+      const jaAtivo = !!prev[id];
+      if (jaAtivo) {
+        // já estava aberta: fecha tudo
+        return {};
       }
+      // fecha tudo e abre só essa
       return { [id]: true };
     });
+
+    // rola até o conteúdo da aba (igual ao info.scrollIntoView do JS original)
+    setTimeout(() => {
+      const grupo = document.getElementById(id);
+      if (grupo) {
+        const info = grupo.querySelector(".info");
+        if (info) {
+          info.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          grupo.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }, 60);
   }, []);
 
+  // Navegação rápida: abre a aba e rola
   const irPara = useCallback((id: string) => {
     setAbertos({ [id]: true });
     setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 50);
+      const grupo = document.getElementById(id);
+      if (grupo) {
+        const info = grupo.querySelector(".info");
+        if (info) {
+          info.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }, 60);
   }, []);
 
-  // Busca reativa
-  useEffect(() => {
-    if (!query.trim()) {
+  // Busca ao pressionar Enter (igual ao JS original)
+  const handleBuscar = useCallback((valor: string) => {
+    if (!valor.trim()) {
       setDestaques([]);
       return;
     }
-    const q = query.toLowerCase().trim();
-    const mapa: Record<string, string> = {
-      objetivos:   "Objetivos do Projeto inclusão respeito EEEPs",
-      desafios:    "Desafios preconceito adaptação escolar invisibilidade cultural pressão emocional",
-      cultura:     "Cultura Local Pitaguary Maracanaú Pacatuba Ceará resistência representatividade",
-      conteudos:   "Conteúdos playlist vídeos interculturalidade resistência",
-      trajetoria:  "Trajetória colonização constituição 1988 educação intercultural bilíngue",
-      realidade:   "Realidade educacional inclusão contradição currículo padronizado pressão acadêmica",
-      dados:       "Dados pesquisa gráficos diagnóstico estudantes",
-      relatos:     "Relatos Ailton Krenak Sonia Guajajara Raoni reflexões pertencimento",
-      reflexoes:   "Reflexões inclusão diversidade pertencimento escuta transformação",
-      integrantes: "Integrantes projeto orientadora equipe membros",
-    };
+    const q = valor.toLowerCase().trim();
+
     const encontrados = secoes
       .filter((s) => {
-        const texto = (s.titulo + " " + (mapa[s.id] ?? "")).toLowerCase();
+        const texto = (s.titulo + " " + (MAPA_BUSCA[s.id] ?? "")).toLowerCase();
         return texto.includes(q);
       })
       .map((s) => s.id);
 
+    // remove destaque antigo, adiciona novo — igual ao JS original
     setDestaques(encontrados);
 
     if (encontrados.length > 0) {
-      const novosAbertos: Record<string, boolean> = {};
-      encontrados.forEach((id) => { novosAbertos[id] = true; });
-      setAbertos((prev) => ({ ...prev, ...novosAbertos }));
-      setTimeout(() => {
-        const el = document.getElementById(encontrados[0]);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 100);
-    }
-  }, [query]);
+      const primeiroId = encontrados[0];
+      // rola até o tópico encontrado e destaca
+      const el = document.getElementById(primeiroId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  const limparBusca = () => {
-    setQuery("");
-    setDestaques([]);
-  };
+      // remove o destaque após 1.5s (igual ao setTimeout do JS original)
+      setTimeout(() => setDestaques([]), 1500);
+    }
+  }, []);
 
   return (
     <>
       <Folhas />
 
       <BarraBusca
-        query={query}
-        setQuery={setQuery}
-        resultados={destaques.length}
-        onLimpar={limparBusca}
+        onBuscar={handleBuscar}
+        destaques={destaques}
       />
 
       <div className="page-wrapper">
