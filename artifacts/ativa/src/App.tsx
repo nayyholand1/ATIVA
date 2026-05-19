@@ -225,10 +225,23 @@ function CulturaLocal() {
   return (
     <>
       <h2><Trees size={20} /> Cultura Local</h2>
-      <p className="intro-cultura">
-        "A cultura indígena não está distante de nós — ela faz parte da história da nossa própria região."
-      </p>
-      <div className="cards">
+
+      {/* Banner com foto */}
+      <div className="cultura-banner">
+        <img
+          src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1000&q=80"
+          alt="Natureza — Serra da Aratanha, Ceará"
+          className="cultura-foto"
+          loading="lazy"
+        />
+        <div className="cultura-overlay">
+          <Trees size={28} />
+          <p>"A cultura indígena não está distante de nós — ela faz parte da história da nossa própria região."</p>
+          <span>Povo Pitaguary — Serra da Aratanha, Ceará</span>
+        </div>
+      </div>
+
+      <div className="cards" style={{ marginTop: 24 }}>
         {items.map((c) => (
           <div className="card" key={c.titulo}>
             <strong>{c.titulo}</strong>
@@ -458,22 +471,39 @@ function Relatos() {
     { tema: "Cultura e ancestralidade", fala: "A floresta é nossa casa, nossa memória e nossa vida.", autor: "Sonia Guajajara" },
   ];
 
+  const [atual, setAtual] = useState(0);
+
+  const anterior = () => setAtual((i) => (i === 0 ? relatos.length - 1 : i - 1));
+  const proximo  = () => setAtual((i) => (i === relatos.length - 1 ? 0 : i + 1));
+  const r = relatos[atual];
+
   return (
     <>
       <h2><MessageCircle size={20} /> Relatos e Reflexões</h2>
       <p className="intro-relatos">
-        As falas abaixo reforçam discussões sobre educação, pertencimento,
-        invisibilidade cultural e a importância da valorização dos povos
-        indígenas dentro da sociedade e das escolas.
+        Falas de lideranças indígenas sobre educação, pertencimento e cultura.
       </p>
-      <div className="relatos-container">
-        {relatos.map((r) => (
-          <div className="relato" key={r.autor}>
-            <span className="tema-relato">{r.tema}</span>
-            <p>"{r.fala}"</p>
-            <span className="autor-relato">— {r.autor}</span>
+
+      <div className="carousel-relato">
+        <div className="aspas-deco">"</div>
+        <span className="tema-relato">{r.tema}</span>
+        <p className="fala-carousel">{r.fala}</p>
+        <span className="autor-relato">— {r.autor}</span>
+
+        <div className="carousel-nav">
+          <button onClick={anterior} aria-label="Anterior" className="carousel-btn">‹</button>
+          <div className="carousel-dots">
+            {relatos.map((_, i) => (
+              <button
+                key={i}
+                className={`dot${i === atual ? " dot-ativo" : ""}`}
+                onClick={() => setAtual(i)}
+                aria-label={`Ir para relato ${i + 1}`}
+              />
+            ))}
           </div>
-        ))}
+          <button onClick={proximo} aria-label="Próximo" className="carousel-btn">›</button>
+        </div>
       </div>
     </>
   );
@@ -676,6 +706,22 @@ export default function App() {
             O projeto A.T.I.V.A. busca conscientizar sobre os desafios enfrentados por
             estudantes indígenas em escolas profissionalizantes, principalmente nas EEEPs.
           </p>
+
+          {/* Card da sigla */}
+          <div className="sigla-card">
+            {[
+              { letra: "A", palavra: "Accountability" },
+              { letra: "T", palavra: "Trajetórias" },
+              { letra: "I", palavra: "Indígenas" },
+              { letra: "V", palavra: "Vivências" },
+              { letra: "A", palavra: "Acadêmicas" },
+            ].map((item, i) => (
+              <div className="sigla-item" key={i}>
+                <span className="sigla-letra">{item.letra}</span>
+                <span className="sigla-palavra">{item.palavra}</span>
+              </div>
+            ))}
+          </div>
 
           {/* Acordeão */}
           <div className="botoes">
