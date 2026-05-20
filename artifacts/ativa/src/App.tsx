@@ -639,6 +639,86 @@ function Integrantes() {
 }
 
 /* ===================================================
+   PADRÃO GEOMÉTRICO INDÍGENA
+=================================================== */
+function PadraoIndigena({ opacidade = 1 }: { opacidade?: number }) {
+  return (
+    <div className="padrao-indigena" aria-hidden="true" style={{ opacity: opacidade }}>
+      <svg width="100%" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="zig-ind" x="0" y="0" width="56" height="32" patternUnits="userSpaceOnUse">
+            {/* Linha superior — ziguezague principal */}
+            <polyline points="0,10 14,2 28,10 42,2 56,10"
+              fill="none" stroke="rgba(214,178,122,0.55)" strokeWidth="1.8" strokeLinejoin="round" />
+            {/* Linha inferior — espelho */}
+            <polyline points="0,22 14,30 28,22 42,30 56,22"
+              fill="none" stroke="rgba(214,178,122,0.28)" strokeWidth="1.2" strokeLinejoin="round" />
+            {/* Losango central */}
+            <polygon points="28,8 33,16 28,24 23,16"
+              fill="rgba(214,178,122,0.10)" stroke="rgba(214,178,122,0.45)" strokeWidth="1" />
+            {/* Pontos de junção */}
+            <circle cx="0"  cy="10" r="2" fill="rgba(214,178,122,0.4)" />
+            <circle cx="14" cy="2"  r="2" fill="rgba(214,178,122,0.4)" />
+            <circle cx="28" cy="10" r="2" fill="rgba(214,178,122,0.4)" />
+            <circle cx="42" cy="2"  r="2" fill="rgba(214,178,122,0.4)" />
+            <circle cx="56" cy="10" r="2" fill="rgba(214,178,122,0.4)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="32" fill="url(#zig-ind)" />
+      </svg>
+    </div>
+  );
+}
+
+/* ===================================================
+   BARRA DE PROGRESSO DE LEITURA
+=================================================== */
+function ProgressoLeitura() {
+  const [pct, setPct] = useState(0);
+
+  useEffect(() => {
+    const atualizar = () => {
+      const doc = document.documentElement;
+      const total = doc.scrollHeight - doc.clientHeight;
+      setPct(total > 0 ? Math.min(100, (window.scrollY / total) * 100) : 0);
+    };
+    window.addEventListener("scroll", atualizar, { passive: true });
+    return () => window.removeEventListener("scroll", atualizar);
+  }, []);
+
+  return (
+    <div className="progresso-trilha" aria-hidden="true">
+      <div className="progresso-barra" style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+/* ===================================================
+   BOTÃO VOLTAR AO TOPO
+=================================================== */
+function BotaoTopo() {
+  const [visivel, setVisivel] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisivel(window.scrollY > 380);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <button
+      className={`botao-topo${visivel ? " visivel" : ""}`}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Voltar ao topo"
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="3,12 9,5 15,12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  );
+}
+
+/* ===================================================
    TEXTO DO ORIENTADOR
 =================================================== */
 function TextoOrientador() {
@@ -653,9 +733,19 @@ function TextoOrientador() {
     "Portanto, enfrentar essa realidade exige mais do que políticas compensatórias ou reforço escolar. É necessário repensar profundamente os currículos, os processos avaliativos e os mecanismos de Accountability que organizam a educação pública contemporânea. Sem isso, a escola continuará reproduzindo desigualdades históricas sob o discurso da meritocracia e da eficiência, perpetuando a marginalização de sujeitos cujas experiências e saberes permanecem sistematicamente silenciados dentro das instituições escolares.",
   ];
 
+  const totalPalavras = paragrafos.join(" ").split(/\s+/).length;
+  const minutos = Math.ceil(totalPalavras / 200);
+
   return (
     <>
       <h2><Feather size={20} /> Texto do Orientador</h2>
+
+      <div className="tempo-leitura">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        {minutos} min de leitura · {totalPalavras} palavras
+      </div>
 
       <div className="orientador-header">
         <img
@@ -796,6 +886,8 @@ export default function App() {
     <>
       {splashVisivel && <SplashScreen onFim={onSplashFim} />}
 
+      <ProgressoLeitura />
+      <BotaoTopo />
       <Folhas />
 
       <BarraBusca
@@ -835,6 +927,9 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* Separador geométrico indígena */}
+          <PadraoIndigena />
 
           {/* Acordeão */}
           <div className="botoes">
