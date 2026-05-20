@@ -472,10 +472,21 @@ function Relatos() {
   ];
 
   const [atual, setAtual] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   const anterior = () => setAtual((i) => (i === 0 ? relatos.length - 1 : i - 1));
   const proximo  = () => setAtual((i) => (i === relatos.length - 1 ? 0 : i + 1));
   const r = relatos[atual];
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) diff > 0 ? proximo() : anterior();
+    touchStartX.current = null;
+  };
 
   return (
     <>
@@ -484,7 +495,11 @@ function Relatos() {
         Falas de lideranças indígenas sobre educação, pertencimento e cultura.
       </p>
 
-      <div className="carousel-relato">
+      <div
+        className="carousel-relato"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <div className="aspas-deco">"</div>
         <span className="tema-relato">{r.tema}</span>
         <p className="fala-carousel">{r.fala}</p>
@@ -504,6 +519,7 @@ function Relatos() {
           </div>
           <button onClick={proximo} aria-label="Próximo" className="carousel-btn">›</button>
         </div>
+        <span className="swipe-hint">deslize para navegar</span>
       </div>
     </>
   );
