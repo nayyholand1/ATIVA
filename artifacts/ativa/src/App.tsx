@@ -3,7 +3,7 @@ import {
   Search, Target, AlertTriangle, Trees, Clapperboard, Clock3,
   BookOpenText, PieChart, MessageCircle, Sparkles, Users,
   ChevronDown, X, School, BarChart3, EyeOff, ClipboardList,
-  Scale, Building2, Landmark, PlayCircle
+  Scale, Building2, Landmark, PlayCircle, Feather
 } from "lucide-react";
 
 /* ===================================================
@@ -15,6 +15,44 @@ interface Secao {
   descricao: string;
   icon: React.ReactNode;
   conteudo: React.ReactNode;
+}
+
+/* ===================================================
+   SPLASH SCREEN
+=================================================== */
+function SplashScreen({ onFim }: { onFim: () => void }) {
+  const letras = [
+    { l: "A", w: "Accountability" },
+    { l: "T", w: "Trajetórias" },
+    { l: "I", w: "Indígenas" },
+    { l: "V", w: "Vivências" },
+    { l: "A", w: "Acadêmicas" },
+  ];
+  const [saindo, setSaindo] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setSaindo(true);
+      setTimeout(onFim, 600);
+    }, 3400);
+    return () => clearTimeout(t);
+  }, [onFim]);
+
+  return (
+    <div className={`splash${saindo ? " splash-saindo" : ""}`}>
+      <div className="splash-letras">
+        {letras.map(({ l, w }, i) => (
+          <div key={i} className="splash-item" style={{ animationDelay: `${i * 0.38}s` }}>
+            <span className="splash-letra">{l}</span>
+            <span className="splash-palavra">{w}</span>
+          </div>
+        ))}
+      </div>
+      <p className="splash-sub" style={{ animationDelay: "2.2s" }}>
+        Projeto de pesquisa — EEEP Raimundo Célio Rodrigues
+      </p>
+    </div>
+  );
 }
 
 /* ===================================================
@@ -601,11 +639,66 @@ function Integrantes() {
 }
 
 /* ===================================================
+   TEXTO DO ORIENTADOR
+=================================================== */
+function TextoOrientador() {
+  const paragrafos = [
+    "A inserção de estudantes indígenas em escolas profissionalizantes evidencia uma das contradições mais profundas da educação brasileira contemporânea: a coexistência entre o discurso da inclusão e a manutenção de estruturas curriculares incapazes de reconhecer a pluralidade sociocultural do país. Quando estudantes oriundos de escolas localizadas em territórios indígenas ingressam em Escolas Estaduais de Educação Profissional (EEEPs), frequentemente se deparam com um modelo pedagógico rigidamente orientado por desempenho, produtividade e padronização curricular, destoando radicalmente das experiências educativas vivenciadas em suas comunidades de origem.",
+    "A educação escolar indígena, respaldada pela Constituição Federal de 1988 e pela Lei de Diretrizes e Bases da Educação Nacional, fundamenta-se nos princípios da interculturalidade, do bilinguismo e da valorização dos saberes tradicionais. Entretanto, ao ingressarem nas EEEPs, muitos estudantes indígenas passam a enfrentar um ambiente educacional estruturado sob uma lógica técnico-gerencial, marcada pela intensificação das avaliações externas, pela centralidade dos indicadores de desempenho e pela cultura da alta performance acadêmica. Nesse contexto, ocorre uma ruptura pedagógica e identitária: os conhecimentos, ritmos e experiências construídos nas aldeias tornam-se invisibilizados diante de um currículo que privilegia competências alinhadas às demandas do mercado e aos índices institucionais de rendimento.",
+    "Essa disparidade torna-se evidente nos resultados das avaliações diagnósticas promovidas pela SEDUC. Historicamente, estudantes indígenas aparecem nos níveis crítico ou muito crítico, sobretudo nas áreas de Língua Portuguesa e Matemática, apresentando percentuais de acerto frequentemente entre 20% e 30%. Todavia, interpretar esses dados apenas sob a ótica do déficit cognitivo ou da baixa aprendizagem constitui uma leitura simplista e profundamente injusta. Tais indicadores revelam, antes de tudo, a incapacidade do sistema educacional em construir instrumentos avaliativos sensíveis às especificidades culturais, linguísticas e epistemológicas desses sujeitos.",
+    "As avaliações padronizadas operam a partir de uma concepção homogênea de conhecimento, desconsiderando que muitos estudantes indígenas possuem trajetórias escolares atravessadas por outras formas de produção de saber, outras temporalidades e outras relações com a linguagem e com o mundo. Desse modo, o baixo desempenho não pode ser dissociado das desigualdades estruturais, das barreiras linguísticas, da ausência de políticas de transição curricular e da insuficiência de práticas pedagógicas interculturais nas escolas profissionalizantes.",
+    "Além disso, a própria lógica da Accountability presente nas EEEPs aprofunda esse problema. Inspirada em modelos gerenciais de educação, a Accountability estabelece mecanismos de responsabilização baseados em metas, resultados quantitativos e desempenho institucional. Na prática, escolas, gestores e professores passam a ser pressionados por índices e rankings, criando uma cultura educacional orientada pela eficiência e pela competitividade. Nesse cenário, estudantes indígenas acabam sendo percebidos, muitas vezes, como sujeitos que \"comprometem\" os indicadores da escola, reforçando processos sutis — e por vezes explícitos — de exclusão pedagógica.",
+    "O problema central reside justamente na incompatibilidade entre a lógica da Accountability e as experiências socioculturais dos povos indígenas. Enquanto a educação indígena valoriza coletividade, territorialidade, ancestralidade e diversidade de saberes, o modelo gerencial das EEEPs prioriza padronização, desempenho individual e produtividade mensurável. Trata-se, portanto, de um choque entre racionalidades distintas de educação e de formação humana.",
+    "Nesse sentido, discutir o baixo rendimento de estudantes indígenas sem problematizar as estruturas curriculares e avaliativas das escolas profissionalizantes significa responsabilizar os próprios sujeitos por uma exclusão produzida institucionalmente. A questão não é apenas pedagógica, mas política e epistemológica. O desafio da educação brasileira não consiste em \"adaptar\" o estudante indígena à lógica da escola profissionalizante, mas em transformar a própria escola para que ela seja efetivamente intercultural, plural e socialmente justa.",
+    "Portanto, enfrentar essa realidade exige mais do que políticas compensatórias ou reforço escolar. É necessário repensar profundamente os currículos, os processos avaliativos e os mecanismos de Accountability que organizam a educação pública contemporânea. Sem isso, a escola continuará reproduzindo desigualdades históricas sob o discurso da meritocracia e da eficiência, perpetuando a marginalização de sujeitos cujas experiências e saberes permanecem sistematicamente silenciados dentro das instituições escolares.",
+  ];
+
+  return (
+    <>
+      <h2><Feather size={20} /> Texto do Orientador</h2>
+
+      <div className="orientador-header">
+        <img
+          src="https://i.ibb.co/PGRMQnqw/dd590e55-a705-4635-9adb-9177fa7ed51f.jpg"
+          alt="Gabriel Xavier"
+          className="orientador-avatar"
+        />
+        <div className="orientador-info">
+          <strong>Gabriel Xavier</strong>
+          <span>Professor Orientador</span>
+          <span>EEEP Raimundo Célio Rodrigues</span>
+        </div>
+      </div>
+
+      <blockquote className="texto-destaque">
+        "O desafio da educação brasileira não consiste em 'adaptar' o estudante indígena à lógica da escola
+        profissionalizante, mas em transformar a própria escola para que ela seja efetivamente intercultural,
+        plural e socialmente justa."
+      </blockquote>
+
+      <div className="texto-corpo">
+        {paragrafos.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/* ===================================================
    COMPONENTE PRINCIPAL
 =================================================== */
 export default function App() {
   const [abertos, setAbertos] = useState<Record<string, boolean>>({ objetivos: true });
   const [destaques, setDestaques] = useState<string[]>([]);
+  const [splashVisivel, setSplashVisivel] = useState(() => {
+    try { return !sessionStorage.getItem("ativa-splash"); } catch { return false; }
+  });
+
+  const onSplashFim = useCallback(() => {
+    try { sessionStorage.setItem("ativa-splash", "1"); } catch {}
+    setSplashVisivel(false);
+  }, []);
 
   const MAPA_BUSCA: Record<string, string> = {
     objetivos:   "objetivo objetivos inclusão respeito eeep",
@@ -617,6 +710,7 @@ export default function App() {
     dados:       "dados pesquisa grafico diagnóstico estudantes",
     relatos:     "relato relatos krenak guajajara raoni pertencimento",
     reflexoes:   "reflexão reflexoes diversidade escuta transformação",
+    orientador:  "orientador gabriel xavier texto análise accountability currículo avaliação estrutural",
     integrantes: "integrante integrantes orientador equipe membros gabriel xavier isabelle",
   };
 
@@ -630,6 +724,7 @@ export default function App() {
     { id: "dados",       titulo: "Dados da Pesquisa",       descricao: "Resultados do questionário aplicado na EEEP",            icon: <PieChart size={16} />,      conteudo: <DadosPesquisa /> },
     { id: "relatos",     titulo: "Relatos",                 descricao: "Falas de lideranças indígenas sobre educação e cultura",  icon: <MessageCircle size={16} />, conteudo: <Relatos /> },
     { id: "reflexoes",   titulo: "Reflexões",               descricao: "Inclusão, pertencimento e transformação coletiva",       icon: <Sparkles size={16} />,      conteudo: <Reflexoes /> },
+    { id: "orientador",  titulo: "Texto do Orientador",     descricao: "Análise do Prof. Gabriel Xavier sobre accountability e educação indígena", icon: <Feather size={16} />, conteudo: <TextoOrientador /> },
     { id: "integrantes", titulo: "Integrantes",             descricao: "Equipe responsável pelo projeto A.T.I.V.A.",             icon: <Users size={16} />,         conteudo: <Integrantes /> },
   ];
 
@@ -699,6 +794,8 @@ export default function App() {
 
   return (
     <>
+      {splashVisivel && <SplashScreen onFim={onSplashFim} />}
+
       <Folhas />
 
       <BarraBusca
