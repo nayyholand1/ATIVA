@@ -267,7 +267,7 @@ function CulturaLocal() {
       {/* Banner com foto */}
       <div className="cultura-banner">
         <img
-          src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1000&q=80"
+          src="https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=735319997539934"
           alt="Natureza — Serra da Aratanha, Ceará"
           className="cultura-foto"
           loading="lazy"
@@ -949,8 +949,39 @@ export default function App() {
           </div>
 
           <footer className="site-footer">
-            <p>Projeto A.T.I.V.A. — EEEP Raimundo Célio Rodrigues</p>
-            <p>Conscientização sobre estudantes indígenas nas EEEPs</p>
+            <PadraoIndigena opacidade={0.6} />
+
+            <div className="footer-grid">
+              <div className="footer-bloco">
+                <span className="footer-label">Projeto</span>
+                <strong>A.T.I.V.A.</strong>
+                <span>Accountability e Trajetórias Indígenas<br />em Vivências Acadêmicas</span>
+              </div>
+
+              <div className="footer-bloco">
+                <span className="footer-label">Escola</span>
+                <strong>EEEP Raimundo Célio Rodrigues</strong>
+                <span>Serra — Ceará · Brasil</span>
+              </div>
+
+              <div className="footer-bloco">
+                <span className="footer-label">Disciplina &amp; Período</span>
+                <strong>Projeto de Vida</strong>
+                <span>2º Ano — Automação Industrial<br />1º Semestre · 2025</span>
+              </div>
+
+              <div className="footer-bloco">
+                <span className="footer-label">Orientação</span>
+                <strong>Prof. Gabriel Xavier</strong>
+                <span>Ciências Sociais</span>
+              </div>
+            </div>
+
+            <div className="footer-rodape">
+              <span>Desenvolvido com dedicação pelos integrantes do grupo ATIVA</span>
+              <span className="footer-sep">·</span>
+              <span>Todos os direitos sobre o conteúdo reservados · 2025</span>
+            </div>
           </footer>
         </main>
       </div>
