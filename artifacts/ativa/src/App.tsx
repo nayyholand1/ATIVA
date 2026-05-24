@@ -967,7 +967,7 @@ export default function App() {
               <div className="footer-bloco">
                 <span className="footer-label">Disciplina &amp; Período</span>
                 <strong>Projeto de Vida</strong>
-                <span>2º Ano — Automação Industrial<br />1º Semestre · 2025</span>
+                <span>2º Ano — Automação Industrial<br />2026</span>
               </div>
 
               <div className="footer-bloco">
@@ -980,7 +980,7 @@ export default function App() {
             <div className="footer-rodape">
               <span>Desenvolvido com dedicação pelos integrantes do grupo ATIVA</span>
               <span className="footer-sep">·</span>
-              <span>Todos os direitos sobre o conteúdo reservados · 2025</span>
+              <span>Todos os direitos sobre o conteúdo reservados · 2026</span>
             </div>
           </footer>
         </main>

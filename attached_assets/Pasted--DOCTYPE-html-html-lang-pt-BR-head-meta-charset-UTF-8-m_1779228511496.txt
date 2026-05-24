@@ -15,6 +15,14 @@
 
   <!-- ÍCONES -->
   <script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .ativa-search, div[class*="search"], [class*="inner"] {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+  }
+</style>
+
 </head>
 
 <body>
@@ -49,8 +57,9 @@
 
     <h1>ATIVA</h1>
 
-    <p class="subtitulo">
-      Accountability e Trajetórias Indígenas em Vivências Acadêmicas
+    <p class="subtitulo" style="white-space: nowrap !important; font-size: 3.5vw !important;">
+
+      Accountability e Trajetórias Indígenas em Vivências Acadêmicas.2026
     </p>
 
     <p class="frase">
