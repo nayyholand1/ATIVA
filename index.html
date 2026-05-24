@@ -12,8 +12,12 @@
     content="Projeto A.T.I.V.A. — conscientização sobre os desafios de estudantes indígenas nas EEEPs."
   />
 
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Almendra+Display&family=Poppins:wght@300;400;500;600&display=swap');
+  <link rel="stylesheet" href="style.css" >
+  <link rel="stylesheet" href="attached_assets/style.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+{@import url('https://fonts.googleapis.com/css2?family=Almendra+Display&family=Poppins:wght@300;400;500;600&display=swap');
 
 /* RESET */
 * {
@@ -1366,7 +1370,6 @@ REALIDADE EDUCACIONAL
   opacity: 0.92;
   text-align: justify;
 }
-  </style>
 
   <!-- ÍCONES -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -2980,47 +2983,7 @@ REALIDADE EDUCACIONAL
 
   </main>
 
-  <script>
-    // Função que faz os botões (abas) abrirem e fecharem os textos
-    function mostrar(botao) {
-      const grupo = botao.closest('.grupo');
-      const info = grupo.querySelector('.info');
-      
-      const expandido = botao.getAttribute('aria-expanded') === 'true';
-
-      // Fecha todas as outras abas para ficar organizado
-      document.querySelectorAll('.grupo').forEach(g => {
-        if (g !== grupo) {
-          const b = g.querySelector('.tab');
-          const i = g.querySelector('.info');
-          if (b && i) {
-            b.setAttribute('aria-expanded', 'false');
-            b.classList.remove('ativo');
-            i.style.display = 'none';
-          }
-        }
-      });
-
-      // Abre ou fecha a aba clicada
-      if (expandido) {
-        botao.setAttribute('aria-expanded', 'false');
-        botao.classList.remove('ativo');
-        info.style.display = 'none';
-      } else {
-        botao.setAttribute('aria-expanded', 'true');
-        botao.classList.add('ativo');
-        info.style.display = 'block';
-      }
-    }
-
-    // Inicializa os ícones do Lucide assim que a página carregar
-    document.addEventListener("DOMContentLoaded", function() {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    });
-  </script>
-  
+  <script src="script.js"></script>
 
 </body>
-</html> 
+</html>
